@@ -4042,6 +4042,341 @@ document.querySelectorAll('.faq-q').forEach(q => {
 })();
 </script>
 <!-- /MYSTU-PAYMENT-V1-JS -->
+<!-- MYSTU-PAYMENT-RESULT-V1 -->
+<style>
+  .payment-result-overlay-v1{
+    position:fixed;
+    inset:0;
+    z-index:99999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    background:rgba(10,25,47,.72);
+    backdrop-filter:blur(10px);
+  }
+
+  .payment-result-card-v1{
+    width:min(100%,520px);
+    background:#fff;
+    border-radius:24px;
+    padding:34px 30px 30px;
+    box-shadow:0 24px 70px rgba(0,0,0,.22);
+    text-align:center;
+    position:relative;
+    animation:paymentResultInV1 .25s ease-out;
+  }
+
+  @keyframes paymentResultInV1{
+    from{
+      opacity:0;
+      transform:translateY(14px) scale(.98);
+    }
+    to{
+      opacity:1;
+      transform:translateY(0) scale(1);
+    }
+  }
+
+  .payment-result-close-v1{
+    position:absolute;
+    top:14px;
+    right:16px;
+    width:38px;
+    height:38px;
+    border:0;
+    border-radius:50%;
+    background:#f1f5f9;
+    color:#475569;
+    font-size:25px;
+    line-height:1;
+    cursor:pointer;
+  }
+
+  .payment-result-icon-v1{
+    width:72px;
+    height:72px;
+    margin:0 auto 18px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:34px;
+    font-weight:800;
+  }
+
+  .payment-result-card-v1.is-paid .payment-result-icon-v1{
+    background:#dcfce7;
+    color:#15803d;
+  }
+
+  .payment-result-card-v1.is-pending .payment-result-icon-v1{
+    background:#fef3c7;
+    color:#b45309;
+  }
+
+  .payment-result-card-v1.is-failed .payment-result-icon-v1{
+    background:#fee2e2;
+    color:#b91c1c;
+  }
+
+  .payment-result-eyebrow-v1{
+    margin-bottom:8px;
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:.12em;
+    color:#64748b;
+  }
+
+  .payment-result-card-v1 h3{
+    margin:0 0 10px;
+    color:#0f172a;
+    font-size:26px;
+    line-height:1.2;
+  }
+
+  .payment-result-message-v1{
+    margin:0 auto 20px;
+    max-width:430px;
+    color:#475569;
+    font-size:15px;
+    line-height:1.65;
+  }
+
+  .payment-result-order-v1{
+    margin:0 0 22px;
+    padding:13px 15px;
+    border-radius:12px;
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    text-align:left;
+  }
+
+  .payment-result-order-v1 span{
+    display:block;
+    margin-bottom:5px;
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:.08em;
+    color:#64748b;
+  }
+
+  .payment-result-order-v1 strong{
+    display:block;
+    color:#0f172a;
+    font-size:13px;
+    line-height:1.5;
+    word-break:break-all;
+  }
+
+  .payment-result-actions-v1{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+
+  .payment-result-primary-v1,
+  .payment-result-secondary-v1{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-height:46px;
+    padding:0 20px;
+    border-radius:12px;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:800;
+    cursor:pointer;
+  }
+
+  .payment-result-primary-v1{
+    border:0;
+    background:#0f766e;
+    color:#fff;
+  }
+
+  .payment-result-secondary-v1{
+    border:1px solid #cbd5e1;
+    background:#fff;
+    color:#334155;
+  }
+
+  @media (max-width:600px){
+    .payment-result-overlay-v1{
+      padding:16px;
+    }
+
+    .payment-result-card-v1{
+      padding:30px 20px 22px;
+      border-radius:20px;
+    }
+
+    .payment-result-card-v1 h3{
+      font-size:23px;
+    }
+
+    .payment-result-actions-v1 > *{
+      width:100%;
+    }
+  }
+</style>
+
+<script id="mystu-payment-result-v1-js">
+(function(){
+  "use strict";
+
+  const params = new URLSearchParams(window.location.search);
+  const paymentStatus = (params.get("payment") || "").toLowerCase();
+  const orderId = params.get("order_id") || "";
+
+  const allowedStatuses = ["paid", "pending", "failed"];
+
+  if (!allowedStatuses.includes(paymentStatus)) {
+    return;
+  }
+
+  const config = {
+    paid: {
+      className: "is-paid",
+      icon: "✓",
+      eyebrow: "PEMBAYARAN BERJAYA",
+      title: "Pembayaran anda berjaya!",
+      message:
+        "Terima kasih kerana membeli MyStu QR. Pesanan anda telah berjaya diterima.",
+      primary: "Kembali ke MyStu QR"
+    },
+    pending: {
+      className: "is-pending",
+      icon: "!",
+      eyebrow: "PEMBAYARAN DIPROSES",
+      title: "Pembayaran sedang diproses",
+      message:
+        "Pembayaran anda masih dalam proses. Sila tunggu sebentar dan semak semula status pesanan anda.",
+      primary: "Kembali ke MyStu QR"
+    },
+    failed: {
+      className: "is-failed",
+      icon: "×",
+      eyebrow: "PEMBAYARAN TIDAK BERJAYA",
+      title: "Pembayaran tidak berjaya",
+      message:
+        "Pembayaran tidak dapat diselesaikan. Anda boleh cuba membuat pembayaran semula.",
+      primary: "Cuba Lagi"
+    }
+  };
+
+  const result = config[paymentStatus];
+
+  const overlay = document.createElement("div");
+  overlay.className = "payment-result-overlay-v1";
+  overlay.setAttribute("role", "dialog");
+  overlay.setAttribute("aria-modal", "true");
+  overlay.setAttribute("aria-label", result.title);
+
+  const safeOrderId = orderId
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+  overlay.innerHTML = `
+    <div class="payment-result-card-v1 ${result.className}">
+      <button
+        type="button"
+        class="payment-result-close-v1"
+        aria-label="Tutup"
+      >&times;</button>
+
+      <div class="payment-result-icon-v1">${result.icon}</div>
+
+      <div class="payment-result-eyebrow-v1">
+        ${result.eyebrow}
+      </div>
+
+      <h3>${result.title}</h3>
+
+      <p class="payment-result-message-v1">
+        ${result.message}
+      </p>
+
+      ${
+        safeOrderId
+          ? `
+            <div class="payment-result-order-v1">
+              <span>ORDER ID</span>
+              <strong>${safeOrderId}</strong>
+            </div>
+          `
+          : ""
+      }
+
+      <div class="payment-result-actions-v1">
+        <a
+          class="payment-result-primary-v1"
+          href="index.html"
+        >
+          ${result.primary}
+        </a>
+
+        <button
+          type="button"
+          class="payment-result-secondary-v1"
+          data-payment-result-close
+        >
+          Tutup
+        </button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  const close = function(){
+    overlay.remove();
+
+    const cleanUrl = new URL(window.location.href);
+    cleanUrl.searchParams.delete("payment");
+    cleanUrl.searchParams.delete("order_id");
+
+    window.history.replaceState(
+      {},
+      document.title,
+      cleanUrl.pathname + cleanUrl.search + cleanUrl.hash
+    );
+  };
+
+  const closeButton = overlay.querySelector(
+    ".payment-result-close-v1"
+  );
+
+  const secondaryButton = overlay.querySelector(
+    "[data-payment-result-close]"
+  );
+
+  if (closeButton) {
+    closeButton.addEventListener("click", close);
+  }
+
+  if (secondaryButton) {
+    secondaryButton.addEventListener("click", close);
+  }
+
+  overlay.addEventListener("click", function(event){
+    if (event.target === overlay) {
+      close();
+    }
+  });
+
+  document.addEventListener("keydown", function(event){
+    if (event.key === "Escape" && document.body.contains(overlay)) {
+      close();
+    }
+  });
+})();
+</script>
+<!-- /MYSTU-PAYMENT-RESULT-V1 -->
 </body>
 </html>
 
