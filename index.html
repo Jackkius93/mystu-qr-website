@@ -4202,6 +4202,73 @@ document.querySelectorAll('.faq-q').forEach(q => {
     color:#334155;
   }
 
+  .payment-onboarding-v2{
+    margin:0 0 20px;
+    padding:18px;
+    border:1px solid #ccfbf1;
+    border-radius:16px;
+    background:#f0fdfa;
+    text-align:left;
+  }
+
+  .payment-onboarding-badge-v2{
+    display:inline-flex;
+    margin-bottom:12px;
+    padding:7px 10px;
+    border-radius:999px;
+    background:#ccfbf1;
+    color:#0f766e;
+    font-size:11px;
+    font-weight:900;
+    letter-spacing:.06em;
+  }
+
+  .payment-onboarding-title-v2{
+    margin-bottom:12px;
+    color:#0f172a;
+    font-size:15px;
+    font-weight:900;
+  }
+
+  .payment-onboarding-steps-v2{
+    display:grid;
+    gap:10px;
+  }
+
+  .payment-onboarding-step-v2{
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+  }
+
+  .payment-onboarding-step-v2 > span{
+    flex:0 0 26px;
+    width:26px;
+    height:26px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:#0f766e;
+    color:#fff;
+    font-size:12px;
+    font-weight:900;
+  }
+
+  .payment-onboarding-step-v2 strong{
+    display:block;
+    margin-bottom:2px;
+    color:#0f172a;
+    font-size:13px;
+  }
+
+  .payment-onboarding-step-v2 small{
+    display:block;
+    color:#64748b;
+    font-size:12px;
+    line-height:1.45;
+  }
+
   @media (max-width:600px){
     .payment-result-overlay-v1{
       padding:16px;
@@ -4243,8 +4310,8 @@ document.querySelectorAll('.faq-q').forEach(q => {
       eyebrow: "PEMBAYARAN BERJAYA",
       title: "Pembayaran anda berjaya!",
       message:
-        "Terima kasih kerana membeli MyStu QR. Pesanan anda telah berjaya diterima.",
-      primary: "Kembali ke MyStu QR"
+        "Terima kasih kerana membeli MyStu QR Early Access. Pesanan anda telah berjaya diterima.",
+      primary: "Download MyStu QR"
     },
     pending: {
       className: "is-pending",
@@ -4302,6 +4369,56 @@ document.querySelectorAll('.faq-q').forEach(q => {
       </p>
 
       ${
+        paymentStatus === "paid"
+          ? `
+            <div class="payment-onboarding-v2">
+              <div class="payment-onboarding-badge-v2">
+                PRO • 1 PERANTI • 1 TAHUN
+              </div>
+
+              <div class="payment-onboarding-title-v2">
+                Langkah seterusnya
+              </div>
+
+              <div class="payment-onboarding-steps-v2">
+                <div class="payment-onboarding-step-v2">
+                  <span>1</span>
+                  <div>
+                    <strong>Simpan Order ID</strong>
+                    <small>Gunakan sebagai rujukan pesanan anda.</small>
+                  </div>
+                </div>
+
+                <div class="payment-onboarding-step-v2">
+                  <span>2</span>
+                  <div>
+                    <strong>Download MyStu QR</strong>
+                    <small>Muat turun aplikasi Android rasmi.</small>
+                  </div>
+                </div>
+
+                <div class="payment-onboarding-step-v2">
+                  <span>3</span>
+                  <div>
+                    <strong>Install aplikasi</strong>
+                    <small>Pasang MyStu QR pada satu peranti Android.</small>
+                  </div>
+                </div>
+
+                <div class="payment-onboarding-step-v2">
+                  <span>4</span>
+                  <div>
+                    <strong>Aktifkan License Key</strong>
+                    <small>License Key akan disediakan melalui delivery selamat.</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `
+          : ""
+      }
+
+      ${
         safeOrderId
           ? `
             <div class="payment-result-order-v1">
@@ -4315,7 +4432,8 @@ document.querySelectorAll('.faq-q').forEach(q => {
       <div class="payment-result-actions-v1">
         <a
           class="payment-result-primary-v1"
-          href="index.html"
+          href="${paymentStatus === "paid" ? "downloads/MyStu-QR-v1.0.0.apk" : "index.html"}"
+          ${paymentStatus === "paid" ? 'download="MyStu-QR-v1.0.0.apk"' : ""}
         >
           ${result.primary}
         </a>
@@ -4377,6 +4495,424 @@ document.querySelectorAll('.faq-q').forEach(q => {
 })();
 </script>
 <!-- /MYSTU-PAYMENT-RESULT-V1 -->
+
+<!-- MYSTU-LICENSE-DELIVERY-V1 -->
+<style>
+.mystu-license-delivery-overlay-v1{
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:rgba(7,18,35,.72);
+  backdrop-filter:blur(8px);
+}
+
+.mystu-license-delivery-card-v1{
+  width:min(520px,100%);
+  background:#fff;
+  border-radius:24px;
+  padding:32px;
+  box-shadow:0 24px 80px rgba(0,0,0,.24);
+  text-align:center;
+}
+
+.mystu-license-delivery-icon-v1{
+  width:64px;
+  height:64px;
+  margin:0 auto 18px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#e8f8f3;
+  color:#0f9d78;
+  font-size:30px;
+  font-weight:800;
+}
+
+.mystu-license-delivery-eyebrow-v1{
+  margin-bottom:8px;
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.12em;
+  color:#0f9d78;
+}
+
+.mystu-license-delivery-card-v1 h3{
+  margin:0 0 10px;
+  font-size:25px;
+  color:#10233f;
+}
+
+.mystu-license-delivery-card-v1 p{
+  margin:0 0 20px;
+  color:#667085;
+  line-height:1.6;
+}
+
+.mystu-license-key-box-v1{
+  margin:20px 0;
+  padding:18px;
+  border:1px solid #dce5ef;
+  border-radius:16px;
+  background:#f7fafc;
+}
+
+.mystu-license-key-label-v1{
+  display:block;
+  margin-bottom:8px;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.1em;
+  color:#667085;
+}
+
+.mystu-license-key-value-v1{
+  display:block;
+  word-break:break-all;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+  font-size:18px;
+  font-weight:800;
+  color:#10233f;
+}
+
+.mystu-license-delivery-meta-v1{
+  display:grid;
+  gap:8px;
+  margin:16px 0 22px;
+  padding:14px;
+  border-radius:14px;
+  background:#f8fafc;
+  color:#475467;
+  font-size:13px;
+  text-align:left;
+}
+
+.mystu-license-delivery-button-v1{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  min-height:48px;
+  border:0;
+  border-radius:12px;
+  background:#0f766e;
+  color:#fff;
+  font-weight:800;
+  text-decoration:none;
+  cursor:pointer;
+}
+
+.mystu-license-delivery-close-v1{
+  margin-top:12px;
+  border:0;
+  background:transparent;
+  color:#667085;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.mystu-license-delivery-loading-v1{
+  padding:12px 0;
+  color:#667085;
+}
+
+@media(max-width:520px){
+  .mystu-license-delivery-card-v1{
+    padding:24px 20px;
+    border-radius:20px;
+  }
+
+  .mystu-license-key-value-v1{
+    font-size:15px;
+  }
+}
+</style>
+
+<script id="mystu-license-delivery-v1-js">
+(function(){
+  "use strict";
+
+  var DELIVERY_ENDPOINT =
+    "https://yagexdnnfuyfbysgdhwi.supabase.co/functions/v1/license-delivery";
+
+  function escapeHtml(value){
+    return String(value == null ? "" : value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function clearDeliveryToken(){
+    var cleanUrl = new URL(window.location.href);
+
+    cleanUrl.hash = "";
+
+    window.history.replaceState(
+      {},
+      document.title,
+      cleanUrl.pathname + cleanUrl.search
+    );
+  }
+
+  function showDeliveryOverlay(content){
+    var existing =
+      document.querySelector(
+        ".mystu-license-delivery-overlay-v1"
+      );
+
+    if (existing) {
+      existing.remove();
+    }
+
+    var overlay =
+      document.createElement("div");
+
+    overlay.className =
+      "mystu-license-delivery-overlay-v1";
+
+    overlay.innerHTML = content;
+
+    document.body.appendChild(overlay);
+
+    var closeButton =
+      overlay.querySelector(
+        "[data-license-delivery-close]"
+      );
+
+    function close(){
+      overlay.remove();
+    }
+
+    if (closeButton) {
+      closeButton.addEventListener(
+        "click",
+        close
+      );
+    }
+
+    overlay.addEventListener(
+      "click",
+      function(event){
+        if (event.target === overlay) {
+          close();
+        }
+      }
+    );
+
+    return overlay;
+  }
+
+  function showLoading(){
+    return showDeliveryOverlay(
+      '<div class="mystu-license-delivery-card-v1">' +
+        '<div class="mystu-license-delivery-icon-v1">✓</div>' +
+        '<div class="mystu-license-delivery-eyebrow-v1">' +
+          'LICENSE DELIVERY' +
+        '</div>' +
+        '<h3>Menyediakan License Key</h3>' +
+        '<p class="mystu-license-delivery-loading-v1">' +
+          'Sila tunggu sebentar. Sistem sedang mengesahkan pembelian anda.' +
+        '</p>' +
+      '</div>'
+    );
+  }
+
+  function showSuccess(license){
+    var licenseKey =
+      escapeHtml(license.license_key);
+
+    var plan =
+      escapeHtml(license.plan || "PRO");
+
+    var expiresAt =
+      license.expires_at
+        ? escapeHtml(
+            new Date(
+              license.expires_at
+            ).toLocaleDateString(
+              "ms-MY",
+              {
+                day:"2-digit",
+                month:"2-digit",
+                year:"numeric"
+              }
+            )
+          )
+        : "—";
+
+    var overlay =
+      showDeliveryOverlay(
+        '<div class="mystu-license-delivery-card-v1">' +
+          '<div class="mystu-license-delivery-icon-v1">✓</div>' +
+          '<div class="mystu-license-delivery-eyebrow-v1">' +
+            'LICENSE BERJAYA DIHANTAR' +
+          '</div>' +
+          '<h3>License Key anda tersedia</h3>' +
+          '<p>' +
+            'Simpan License Key ini. Ia diperlukan untuk mengaktifkan aplikasi MyStu QR.' +
+          '</p>' +
+
+          '<div class="mystu-license-key-box-v1">' +
+            '<span class="mystu-license-key-label-v1">' +
+              'LICENSE KEY' +
+            '</span>' +
+            '<strong class="mystu-license-key-value-v1">' +
+              licenseKey +
+            '</strong>' +
+          '</div>' +
+
+          '<div class="mystu-license-delivery-meta-v1">' +
+            '<div><strong>Pelan:</strong> ' +
+              plan +
+            '</div>' +
+            '<div><strong>Peranti:</strong> 1</div>' +
+            '<div><strong>Sah sehingga:</strong> ' +
+              expiresAt +
+            '</div>' +
+          '</div>' +
+
+          '<a ' +
+            'class="mystu-license-delivery-button-v1" ' +
+            'href="downloads/MyStu-QR-v1.0.0.apk" ' +
+            'download="MyStu-QR-v1.0.0.apk">' +
+            '📥 Download MyStu QR' +
+          '</a>' +
+
+          '<button ' +
+            'type="button" ' +
+            'class="mystu-license-delivery-close-v1" ' +
+            'data-license-delivery-close>' +
+            'Tutup' +
+          '</button>' +
+        '</div>'
+      );
+
+    return overlay;
+  }
+
+  function showError(message){
+    return showDeliveryOverlay(
+      '<div class="mystu-license-delivery-card-v1">' +
+        '<div class="mystu-license-delivery-icon-v1">!</div>' +
+        '<div class="mystu-license-delivery-eyebrow-v1">' +
+          'LICENSE DELIVERY' +
+        '</div>' +
+        '<h3>License Key belum dapat dihantar</h3>' +
+        '<p>' +
+          escapeHtml(message) +
+        '</p>' +
+        '<button ' +
+          'type="button" ' +
+          'class="mystu-license-delivery-close-v1" ' +
+          'data-license-delivery-close>' +
+          'Tutup' +
+        '</button>' +
+      '</div>'
+    );
+  }
+
+  async function deliverLicense(){
+    var hash =
+      window.location.hash || "";
+
+    if (!hash.startsWith(
+      "#delivery_token="
+    )) {
+      return;
+    }
+
+    var params =
+      new URLSearchParams(
+        hash.substring(1)
+      );
+
+    var deliveryToken =
+      params.get("delivery_token");
+
+    if (!deliveryToken) {
+      return;
+    }
+
+    var loadingOverlay =
+      showLoading();
+
+    try {
+      var response =
+        await fetch(
+          DELIVERY_ENDPOINT,
+          {
+            method:"POST",
+            headers:{
+              "Content-Type":
+                "application/json"
+            },
+            body:JSON.stringify({
+              delivery_token:
+                deliveryToken
+            })
+          }
+        );
+
+      var result =
+        await response.json();
+
+      if (
+        !response.ok ||
+        !result.success
+      ) {
+        throw new Error(
+          result.message ||
+          "License Key tidak dapat dihantar."
+        );
+      }
+
+      var license =
+        result.license ||
+        result.data ||
+        result;
+
+      if (!license.license_key) {
+        throw new Error(
+          "License Key tidak diterima daripada server."
+        );
+      }
+
+      loadingOverlay.remove();
+
+      clearDeliveryToken();
+
+      showSuccess(license);
+
+    } catch(error) {
+      loadingOverlay.remove();
+
+      showError(
+        error.message ||
+        "Delivery License Key gagal. Sila cuba semula."
+      );
+    }
+  }
+
+  if (
+    document.readyState === "loading"
+  ) {
+    document.addEventListener(
+      "DOMContentLoaded",
+      deliverLicense,
+      { once:true }
+    );
+  } else {
+    deliverLicense();
+  }
+})();
+</script>
+<!-- /MYSTU-LICENSE-DELIVERY-V1 -->
 </body>
 </html>
 
